@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            min-height: 100vh;
+            background-color: #db6a6a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .calculator {
+            width: 300px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .screen {
+            width: 100%;
+            height: 60px;
+            margin-bottom: 20px;
+            padding: 10px;
+            font-size: 24px;
+            text-align: right;
+            border: none;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 15px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-number {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-operator {
+            background-color: #ff9f43;
+            color: white;
+        }
+
+        .btn-equal {
+            background-color: #4CAF50;
+            color: white;
+            grid-column: span 2;
+        }
+
+        .btn-clear {
+            background-color: #ff5252;
+            color: white;
+        }
+
+        .btn:hover:not(.btn-equal):not(.btn-clear) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-equal:hover {
+            background-color: #45a049;
+        }
+
+        .btn-clear:hover {
+            background-color: #ff1744;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" class="screen" readonly>
+        <div class="buttons-grid">
+            <button class="btn btn-clear" onclick="clearDisplay()">AC</button>
+            <button class="btn btn-clear" onclick="deleteLast()">DEL</button>
+            <button class="btn btn-operator" onclick="appendOperator('/')">/</button>
+            <button class="btn btn-operator" onclick="appendOperator('*')">×</button>
+
+            <button class="btn btn-number" onclick="appendNumber('7')">7</button>
+            <button class="btn btn-number" onclick="appendNumber('8')">8</button>
+            <button class="btn btn-number" onclick="appendNumber('9')">9</button>
+            <button class="btn btn-operator" onclick="appendOperator('-')">-</button>
+
+            <button class="btn btn-number" onclick="appendNumber('4')">4</button>
+            <button class="btn btn-number" onclick="appendNumber('5')">5</button>
+            <button class="btn btn-number" onclick="appendNumber('6')">6</button>
+            <button class="btn btn-operator" onclick="appendOperator('+')">+</button>
+
+            <button class="btn btn-number" onclick="appendNumber('1')">1</button>
+            <button class="btn btn-number" onclick="appendNumber('2')">2</button>
+            <button class="btn btn-number" onclick="appendNumber('3')">3</button>
+            <button class="btn btn-equal" onclick="calculate()">=</button>
+
+            <button class="btn btn-number" onclick="appendNumber('0')">0</button>
+            <button class="btn btn-number" onclick="appendNumber('.')">.</button>
+        </div>
+    </div>
+
+    <script>
+        const display = document.querySelector('.screen');
+        let currentExpression = '';
+        let lastOperation = null;
+
+        function appendNumber(num) {
+            if (display.value === '0' || isNaN(display.value)) {
+                display.value = num;
+            } else {
+                display.value += num;
+            }
+        }
+
+        function appendOperator(op) {
+            if (!isNaN(display.value)) {
+                currentExpression += display.value + op;
+                display.value = '';
+                lastOperation = op;
+            }
+        }
+
+        function calculate() {
+            if (!lastOperation || isNaN(display.value)) return;
+
+            currentExpression += display.value;
+            
+            try {
+                const result = eval(currentExpression);
+                display.value = Number(result.toFixed(8));
+                currentExpression = result.toString();
+            } catch(e) {
+                display.value = 'Error';
+                resetCalculator();
+            }
+        }
+
+        function clearDisplay() {
+            display.value = '0';
+            currentExpression = '';
+            lastOperation = null;
+        }
+
+        function deleteLast() {
+            display.value = display.value.slice(0, -1) || '0';
+        }
+
+        function resetCalculator() {
+            display.value = '0';
+            currentExpression = '';
+            lastOperation = null;
+        }
+    </script>
+</body>
+</html>
